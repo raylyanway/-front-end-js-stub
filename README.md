@@ -66,7 +66,7 @@ Delete from `package.json` file:
 }
 ```
 
-Add files in the root of the project:
+Add these files in the root of the project:
 
 - .prettierrc
 
