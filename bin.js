@@ -5,9 +5,12 @@ console.log("Update starts...");
 const fs = require("fs-extra");
 const path = require("path");
 const os = require("os");
+const execSync = require("child_process").execSync;
+const yargs = require("yargs");
 const packageJson = require("./package.json");
 
-const root = process.cwd();
+const projectName = yargs.argv["_"][0];
+const root = path.resolve(projectName);
 const prettierConfig = "{}";
 const prettierIgnoreConfig = "# Ignore artifacts:\nbuild\ncoverage";
 const gitIgnoreConfig = "/.nyc_output";
@@ -50,6 +53,16 @@ const eslintConfig = `{
   ]
 }`;
 
+function install() {
+  try {
+    execSync(`npx create-react-app ${projectName} --template typescript`);
+    updatePackageJson();
+    createAdditionalFiles();
+  } catch (e) {
+    return;
+  }
+}
+
 function updatePackageJson() {
   packageJson.scripts = {
     ...packageJson.scripts,
@@ -90,7 +103,6 @@ function createAdditionalFiles() {
   fs.appendFile(path.join(root, ".gitignore"), gitIgnoreConfig + os.EOL);
 }
 
-updatePackageJson();
-createAdditionalFiles();
+install();
 
 console.log("Update finished.");

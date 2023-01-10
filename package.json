@@ -58,5 +58,5 @@
     "prettier": "npx prettier src --check",
     "prettier:fix": "npm run prettier -- --write"
   },
-  "version": "0.1.6"
+  "version": "0.1.8"
 }
