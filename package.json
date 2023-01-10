@@ -42,21 +42,21 @@
   },
   "name": "front-end-js-stub",
   "scripts": {
+    "eject": "react-scripts eject",
     "build": "react-scripts build",
+    "start": "react-scripts start",
+    "test": "react-scripts test",
     "cy": "start-server-and-test cy:server 3000 cy:run",
     "cy:dev": "start-server-and-test cy:server 3000 cy:open",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:server": "cross-env NODE_ENV=test BROWSER=none react-scripts -r @cypress/instrument-cra start",
-    "eject": "react-scripts eject",
     "format": "npm run prettier:fix && npm run lint:fix",
     "lint": "npx eslint src",
     "lint:fix": "npm run lint -- --fix",
     "prepare": "husky install",
     "prettier": "npx prettier src --check",
-    "prettier:fix": "npm run prettier -- --write",
-    "start": "react-scripts start",
-    "test": "react-scripts test"
+    "prettier:fix": "npm run prettier -- --write"
   },
-  "version": "0.1.1"
+  "version": "0.1.6"
 }
