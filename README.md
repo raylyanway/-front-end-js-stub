@@ -1,275 +1,46 @@
-# Preparation
+# Getting Started with Create React App
 
-Install:
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-- [Code editor](https://code.visualstudio.com/)
-- [Nodejs LTS version](https://nodejs.org/en/)
+## Available Scripts
 
-Set vscode extensions (just copy/paste all rows below in search bar):
+In the project directory, you can run:
 
-```
-dbaeumer.vscode-eslint
-esbenp.prettier-vscode
-rangav.vscode-thunder-client
-richie5um2.vscode-sort-json
-rohit-gohri.format-code-action
-streetsidesoftware.code-spell-checker
-yzhang.markdown-all-in-one
-```
-
-Set vscode settings:
-
-```
-{
-  // Runs Prettier, then ESLint
-  "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": false,
-  "editor.tabSize": 2,
-  "window.zoomLevel": 2,
-  "workbench.colorTheme": "Default Dark+"
-}
-```
-
-# Create new project
-
-`npx create-react-app name-of-your-app --template typescript`
-
-Move dev dependency:
-
-`npm i -D @testing-library/jest-dom @testing-library/react @testing-library/user-event @types/jest @types/node @types/react @types/react-dom typescript web-vitals`
-
-# Install prettier
-
-`npm i -D prettier eslint-config-prettier`
-
-Add in `package.json` file:
-
-```
-"scripts": {
-  "lint": "npx eslint src",
-  "lint:fix": "npm run lint -- --fix",
-  "prettier": "npx prettier src --check",
-  "prettier:fix": "npm run prettier -- --write",
-  "format": "npm run prettier:fix && npm run lint:fix"
-}
-```
-
-Delete from `package.json` file:
-
-```
-"eslintConfig": {
-  "extends": [
-    "react-app",
-    "react-app/jest"
-  ]
-}
-```
-
-Add these files in the root of the project:
-
-- .prettierrc
-
-```
-{}
-```
-
-- .eslintrc
-
-```
-{
-  "extends": ["react-app", "react-app/jest", "prettier"]
-}
-```
-
-- .prettierignore
-
-```
-# Ignore artifacts:
-build
-coverage
-```
-
-# Add import sort plugin
-
-`npm i -D eslint-plugin-simple-import-sort`
-
-Add in `.eslintrc` file:
-
-```
-{
-  "plugins": ["simple-import-sort", "import"],
-  "rules": {
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error",
-    "import/first": "error",
-    "import/newline-after-import": "error",
-    "import/no-duplicates": "error"
-  },
-  "overrides": [
-    // override "simple-import-sort" config
-    {
-      "files": ["*.js", "*.jsx", "*.ts", "*.tsx"],
-      "rules": {
-        "simple-import-sort/imports": [
-          "error",
-          {
-            "groups": [
-              // Packages `react` related packages come first.
-              ["^react", "^@?\\w"],
-              // Side effect imports.
-              ["^\\u0000"],
-              // Internal packages.
-              ["^(@|components)(/.*|$)"],
-              // Parent imports. Put `..` last.
-              ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
-              // Other relative imports. Put same-folder imports and `.` last.
-              ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
-              // Style imports.
-              ["^.+\\.?(css)$"]
-            ]
-          }
-        ]
-      }
-    }
-  ]
-}
-```
-
-# Add Cypress:
-
-`npm i -D cypress @testing-library/cypress @frsource/cypress-plugin-visual-regression-diff eslint-plugin-cypress @cypress/code-coverage @cypress/instrument-cra cross-env start-server-and-test`
-
-Add in `package.json` file:
-
-```
-"scripts": {
-  "cy:server": "cross-env NODE_ENV=test BROWSER=none react-scripts -r @cypress/instrument-cra start",
-  "cy:open": "cypress open",
-  "cy:run": "cypress run",
-  "cy:dev": "start-server-and-test cy:server 3000 cy:open",
-  "cy": "start-server-and-test cy:server 3000 cy:run"
-}
-```
-
-Add in `.gitignore` file:
-
-```
-/.nyc_output
-```
-
-Run Cypress for install process:
-
-`npm run cy:open`
-
-In open window:
-
-- choose `E2E Testing` for configuration. Follow the steps.
-- on `Choose a browser` step click `Switch testing type` to return back.
-- choose `Component Testing` for configuration. Follow the steps.
-- create empty test.
-- close the window.
-
-The steps above will create folder structure for Cypress in your project.
-
-Add in `cypress.config.ts` file:
-
-```
-import codeCoverage from "@cypress/code-coverage/task";
-import { initPlugin } from "@frsource/cypress-plugin-visual-regression-diff/plugins";
-import { defineConfig } from "cypress";
-
-export default defineConfig({
-  video: false,
-  env: {
-    pluginVisualRegressionCleanupUnusedImages: false,
-  },
-  component: {
-    devServer: {
-      framework: "create-react-app",
-      bundler: "webpack",
-    },
-    setupNodeEvents(on, config) {
-      initPlugin(on, config);
-      codeCoverage(on, config);
-
-      return config;
-    },
-  },
-  e2e: {
-    baseUrl: "http://localhost:3000",
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-      initPlugin(on, config);
-      codeCoverage(on, config);
-
-      return config;
-    },
-  },
-});
-```
-
-Add files in `cypress` folder:
-
-- `.eslintrc`
-
-```
-{
-  "extends": ["plugin:cypress/recommended"]
-}
-```
-
-- `tsconfig.json`
-
-```
-{
-  "compilerOptions": {
-    "target": "es5",
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "node"]
-  },
-  "include": ["**/*.ts"]
-}
-```
-
-Add in `cypress/support/commands.ts` file:
-
-```
-import "@frsource/cypress-plugin-visual-regression-diff";
-import "@cypress/code-coverage/support";
-```
-
-# Add Git hooks
-
-`npm i -D husky lint-staged`
-
-`npx husky install`
-
-`npm pkg set scripts.prepare="husky install"`
-
-`npx husky add .husky/pre-commit "npx lint-staged"`
-
-`npx husky add .husky/pre-push "CI=true npm test && npm run cy"`
-
-Add file `.lintstagedrc` in the root of the project:
-
-```
-{
-  "src/**/*.{js,jsx,ts,tsx,json,css,md}": "prettier --write --ignore-unknown",
-  "src/**/*.{js,jsx,ts,tsx,json}": "eslint",
-  "src/**/*.css": "prettier --write"
-}
-```
-
-# Git
-
-Create a new repository on GitHub.
-Copy HTTPS of the repository.
-
-`git remote add origin https://github.com/username/reponame.git`
-
-`git add .`
-
-`git commit -m 'feat(*): initial commit'`
-
-`git push -u origin master`
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
+
+### `npm test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
